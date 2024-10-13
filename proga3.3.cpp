@@ -4,45 +4,102 @@
 #include <locale.h>
 #include <Windows.h>
 
-struct Content {
+class Content {
     char title[100];  // Название трека
     char artist[50];  // Исполнитель
     float duration;   // Продолжительность в секундах
     char format[10];  // Формат (например, MP3)
+
+public:
+    void set(char* t, char* a, float d, char* f) {
+        strcpy(title, t);
+        strcpy(artist, a);
+        duration = d;
+        strcpy(format, f);
+    }
 };
 
-struct Playlist {
-    char name[50];  // Имя плейлиста
-    struct Content tracks[100];  // Массив треков
-    int trackCount;  // Количество треков
-};
-
-struct AudioSettings {
+class AudioSettings {
     int volume;    // Уровень громкости (0 - 100)
     int balance;   // Баланс между левым и правым каналом (-50 до +50)
+
+public:
+    void set(int i, int j) {
+        volume = i;
+        balance = j;
+    }
 };
 
-struct Device {
+class Device {
     char deviceName[100];   // Название устройства
     int maxVolume;          // Максимальная громкость устройства
     int currentVolume;      // Текущая громкость устройства
+
+public:
+    void set(char* d, int i, int j) {
+        strcpy(deviceName, d);
+        maxVolume = i;
+        currentVolume = j;
+    }
 };
 
-struct Equalizer {
+class Equalizer {
     int bass;      // Уровень низких частот (-10 до +10)
     int mid;       // Уровень средних частот (-10 до +10)
     int treble;    // Уровень высоких частот (-10 до +10)
+
+public:
+    void set(int b, int m, int t) {
+        bass = b;
+        mid = m;
+        treble = t;
+    }
 };
 
-struct PlaylistSettings {
+class PlaylistSettings {
     int shuffle;  // Включен ли режим случайного воспроизведения (1 — да, 0 — нет)
     int repeat;   // Включен ли режим повторного воспроизведения (1 — да, 0 — нет)
+
+public:
+    void set(int s, int r) {
+        shuffle = s;
+        repeat = r;
+    }
 };
 
-struct TrackProgress {
+class TrackProgress {
     float currentTime;  // Текущее время воспроизведения в секундах
     float totalTime;    // Общее время трека в секундах
     int isPlaying;      // Флаг воспроизведения (1 — воспроизводится, 0 — пауза)
+
+public:
+    void set(float c, float t, int i) {
+        currentTime = c;
+        totalTime = t;
+        isPlaying = i;
+    }
+};
+
+class Playlist :public Content {
+    char name[50];  // Имя плейлиста
+    Content tracks[100];  // Массив треков
+    int trackCount;  // Количество треков
+public:
+    void set(char* n, int t) {
+        strcpy(name, n);
+        trackCount = t;
+    }
+};
+
+class User :public AudioSettings  AudioSettings {
+    char name[50];  // Имя плейлиста
+    Content tracks[100];  // Массив треков
+    int trackCount;  // Количество треков
+public:
+    void set(char* n, int t) {
+        strcpy(name, n);
+        trackCount = t;
+    }
 };
 
 struct User {
@@ -51,7 +108,14 @@ struct User {
     struct Device device;               // Устройство пользователя
     struct Equalizer equalizer;         // Настройки эквалайзера
     char preferredCodec[10];            // Предпочтительный аудиоформат
+public:
+    void set(char* u, char* p) {
+        strcpy(username, u);
+        strcpy(preferredCodec, p);
+    }
 };
+
+
 
 // Функция для добавления треков в плейлист
 void add_tracks_to_playlist(struct Playlist* myPlaylist) {
