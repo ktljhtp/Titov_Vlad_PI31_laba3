@@ -89,6 +89,23 @@ public:
         strcpy(name, n);
         trackCount = t;
     }
+    // Функция для добавления треков в плейлист
+    void add_tracks_to_playlist(Playlist* myPlaylist) {
+        strcpy(myPlaylist->name, "My Playlist");
+        myPlaylist->trackCount = 2;
+
+        // Заполняем информацию о первом треке
+        strcpy(myPlaylist->tracks[0].title, "Song 1");
+        strcpy(myPlaylist->tracks[0].artist, "Artist 1");
+        myPlaylist->tracks[0].duration = 180.0;
+        strcpy(myPlaylist->tracks[0].format, "MP3");
+
+        // Заполняем информацию о втором треке
+        strcpy(myPlaylist->tracks[1].title, "Song 2");
+        strcpy(myPlaylist->tracks[1].artist, "Artist 2");
+        myPlaylist->tracks[1].duration = 200.0;
+        strcpy(myPlaylist->tracks[1].format, "MP3");
+    }
 };
 
 class User {
@@ -104,25 +121,6 @@ public:
     }
 };
 
-
-
-// Функция для добавления треков в плейлист
-void add_tracks_to_playlist(struct Playlist* myPlaylist) {
-    strcpy(myPlaylist->name, "My Playlist");
-    myPlaylist->trackCount = 2;
-
-    // Заполняем информацию о первом треке
-    strcpy(myPlaylist->tracks[0].title, "Song 1");
-    strcpy(myPlaylist->tracks[0].artist, "Artist 1");
-    myPlaylist->tracks[0].duration = 180.0;
-    strcpy(myPlaylist->tracks[0].format, "MP3");
-
-    // Заполняем информацию о втором треке
-    strcpy(myPlaylist->tracks[1].title, "Song 2");
-    strcpy(myPlaylist->tracks[1].artist, "Artist 2");
-    myPlaylist->tracks[1].duration = 200.0;
-    strcpy(myPlaylist->tracks[1].format, "MP3");
-}
 
 // Функция для заполнения информации о пользователе
 void fill_user_data(struct User* user) {
@@ -168,13 +166,13 @@ void print_track_progress(struct TrackProgress* progress) {
 }
 
 int main() {
-    struct Playlist myPlaylist;
-    struct User user;
-    struct PlaylistSettings playlistSettings;
-    struct TrackProgress trackProgress;
+    Playlist myPlaylist;
+    User user;
+    PlaylistSettings playlistSettings;
+    TrackProgress trackProgress;
 
     // Добавляем треки в плейлист
-    add_tracks_to_playlist(&myPlaylist);
+    Playlist add_tracks_to_playlist(&myPlaylist);
 
     // Заполняем данные пользователя
     fill_user_data(&user);
