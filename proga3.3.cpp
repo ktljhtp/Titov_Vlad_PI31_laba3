@@ -80,7 +80,7 @@ public:
     }
 };
 
-class Playlist :public Content {
+class Playlist {
     char name[50];  // Имя плейлиста
     Content tracks[100];  // Массив треков
     int trackCount;  // Количество треков
@@ -91,22 +91,11 @@ public:
     }
 };
 
-class User :public AudioSettings  AudioSettings {
-    char name[50];  // Имя плейлиста
-    Content tracks[100];  // Массив треков
-    int trackCount;  // Количество треков
-public:
-    void set(char* n, int t) {
-        strcpy(name, n);
-        trackCount = t;
-    }
-};
-
-struct User {
+class User {
     char username[50];               // Имя пользователя
-    struct AudioSettings audioSettings;  // Настройки аудио
-    struct Device device;               // Устройство пользователя
-    struct Equalizer equalizer;         // Настройки эквалайзера
+    AudioSettings audioSettings;  // Настройки аудио
+    Device device;               // Устройство пользователя
+    Equalizer equalizer;         // Настройки эквалайзера
     char preferredCodec[10];            // Предпочтительный аудиоформат
 public:
     void set(char* u, char* p) {
