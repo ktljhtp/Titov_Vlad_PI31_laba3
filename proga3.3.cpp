@@ -115,6 +115,13 @@ public:
 
     }
 
+    // Функция для вывода информации о плейлисте
+    void print_playlist_info(struct Playlist* myPlaylist) {
+        printf("Playlist: %s\n", myPlaylist->name);
+        for (int i = 0; i < myPlaylist->trackCount; i++) {
+            printf("Track %d: %s by %s (Duration: %.2f sec, Format: %s)\n", i + 1, myPlaylist->tracks[i].title, myPlaylist->tracks[i].artist, myPlaylist->tracks[i].duration, myPlaylist->tracks[i].format);
+        }
+    }
 };
 
 class User {
@@ -142,13 +149,7 @@ class User {
 //    user->equalizer.treble = 7;
 //}
 //
-//// Функция для вывода информации о плейлисте
-//void print_playlist_info(struct Playlist* myPlaylist) {
-//    printf("Playlist: %s\n", myPlaylist->name);
-//    for (int i = 0; i < myPlaylist->trackCount; i++) {
-//        printf("Track %d: %s by %s (Duration: %.2f sec, Format: %s)\n", i + 1, myPlaylist->tracks[i].title, myPlaylist->tracks[i].artist, myPlaylist->tracks[i].duration, myPlaylist->tracks[i].format);
-//    }
-//}
+
 //
 //// Функция для вывода информации о пользователе
 //void print_user_info(struct User* user) {
