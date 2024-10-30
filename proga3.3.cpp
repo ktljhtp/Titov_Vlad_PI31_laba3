@@ -35,7 +35,7 @@ public:
         volume = v;
         balance = b;
     }
-    void print() {
+    void print() const {
         cout << "Громкость: " << volume << "\nБаланс: " << balance;
     }
 };
@@ -52,6 +52,9 @@ public:
         maxVolume = m;
         currentVolume = c;
     }
+    void print() const {
+        cout << "Название устройства: " << deviceName << ", Максимальная громкость устройства: " << maxVolume << ", Текущая громкость устройства: " << currentVolume << endl;
+    }
 };
 
 class Equalizer {
@@ -66,6 +69,9 @@ public:
         mid = m;
         treble = t;
     }
+    void print() const {
+        cout << "Equalizer - бас: " << bass << ", средние частоты: " << mid << ", высокие частоты: " << treble << endl;
+    }
 };
 
 class PlaylistSettings {
@@ -77,6 +83,12 @@ public:
     void set(int& s, int& r) {
         shuffle = s;
         repeat = r;
+    }
+    void input_settings() {
+        cout << "Введите режим случайного воспроизведения (1 — включено, 0 — выключено): ";
+        cin >> shuffle;
+        cout << "Введите режим повторного воспроизведения (1 — включено, 0 — выключено): ";
+        cin >> repeat;
     }
     void print() {
         cout << "Случ воспроизведение: " << shuffle << "\nПовторное воспроизв: " << repeat;
@@ -97,34 +109,41 @@ public:
     }
 
     // Функция для вывода текущего состояния трека
-    // void print_track_progress(struct TrackProgress* progress) {
-    printf("\nTrack Progress: %.2f/%.2f sec [%s]\n",
-        progress->currentTime, progress->totalTime, progress->isPlaying ? "Playing" : "Paused");
-}
+    void print() const {
+        cout << "Текущее время воспроизведения: " << currentTime << "/" << totalTime << " sec [" << (isPlaying ? "Playing" : "Paused") << "]\n";
+    }
 };
 
 class Playlist {
 private:
-    PlaylistSettings* setting; //настройка плейлиста  
+    string name_playlist;
+    PlaylistSettings setting; //настройка плейлиста  
     Content* tracks;  // Массив треков
     int trackCount;  // Количество треков
 
 public:
+    void name(string name) {
+        name_playlist = name;
+    }
+    void input_settings() {
+        setting.input_settings();
+    }
     // Функция для добавления треков в плейлист
     void add_tracks_to_playlist(int count) {
-        string title;  // Название трека
-        string artist;  // Исполнитель
-        float duration;   // Продолжительность в секундах
-        string format;  // Формат (например, MP3)
+        delete[] tracks; // Освобождаем память, если массив уже существует
+        tracks = new Content[count];
         trackCount = count;
-        for (int i = 0; i <= count; i++) {
-            cout << "Введите название трека";
+
+        for (int i = 0; i < count; i++) {
+            string title, artist, format;
+            float duration;
+            cout << "Введите название трека: ";
             cin >> title;
-            cout << "Введите исполнителя";
+            cout << "Введите исполнителя: ";
             cin >> artist;
-            cout << "Продолжительность в секундах";
+            cout << "Продолжительность в секундах: ";
             cin >> duration;
-            cout << "Введите название трека";
+            cout << "Введите формат трека: ";
             cin >> format;
             tracks[i].set(title, artist, duration, format);
         }
@@ -132,7 +151,7 @@ public:
     }
 
     // Функция для вывода информации о треках
-    void print_playlist_info(struct Playlist* myPlaylist) {
+    void print_playlist_info() {
         for (int i = 0; i < trackCount; i++) {
             cout << "Track " << i + 1 << ": ";
             tracks[i].print();
@@ -140,8 +159,8 @@ public:
     }
 
     // Функция для вывода настроек плейлиста
-    void print_playlist_settings(struct PlaylistSettings* settings) {
-        setting[0].print();
+    void print_playlist_settings() {
+        setting.print();
     }
 };
 
@@ -154,50 +173,113 @@ private:
     string preferredCodec;            // Предпочтительный аудиоформат
 public:
     //Функция для заполнения информации о пользователе
-    void fill_user_data(struct User* user) {
-        strcpy(user->username, "TitovVD");
-        user->audioSettings.volume = 80;
-        user->audioSettings.balance = 0;
-        strcpy(user->device.deviceName, "Speakers");
-        user->device.maxVolume = 100;
-        user->device.currentVolume = 80;
-        strcpy(user->preferredCodec, "MP3");
+    void fill_user_data() {
+        cout << "Введите имя пользователя: ";
+        cin >> username;
 
-        // Настройки эквалайзера
-        user->equalizer.bass = 5;
-        user->equalizer.mid = 0;
-        user->equalizer.treble = 7;
+        int volume, balance;
+        cout << "Введите уровень громкости (0 - 100): ";
+        cin >> volume;
+        cout << "Введите баланс (-50 до +50): ";
+        cin >> balance;
+        audioSettings.set(volume, balance);
+
+        string deviceName;
+        int maxVolume, currentVolume;
+        cout << "Введите название устройства: ";
+        cin >> deviceName;
+        cout << "Введите максимальную громкость устройства: ";
+        cin >> maxVolume;
+        cout << "Введите текущую громкость устройства: ";
+        cin >> currentVolume;
+        device.set(deviceName, maxVolume, currentVolume);
+
+        int bass, mid, treble;
+        cout << "Введите уровень низких частот (-10 до +10): ";
+        cin >> bass;
+        cout << "Введите уровень средних частот (-10 до +10): ";
+        cin >> mid;
+        cout << "Введите уровень высоких частот (-10 до +10): ";
+        cin >> treble;
+        equalizer.set(bass, mid, treble);
+
+        cout << "Введите предпочитаемый аудиоформат (например, MP3): ";
+        cin >> preferredCodec;
     }
 
 
     // Функция для вывода информации о пользователе
-    void print_user_info(struct User* user) {
-        printf("\nUser: %s\nPreferred Volume: %d\nDevice: %s (Current Volume: %d)\nEqualizer: Bass=%d, Mid=%d, Treble=%d\n",
-            user->username, user->audioSettings.volume, user->device.deviceName, user->device.currentVolume,
-            user->equalizer.bass, user->equalizer.mid, user->equalizer.treble);
+    void print_user_info() const {
+        cout << "\nИнформация о пользователе:\n";
+        cout << "Имя: " << username << "\n";
+        audioSettings.print();
+        device.print();
+        equalizer.print();
+        cout << "Preferred Codec: " << preferredCodec << "\n";
     }
 };
 
 
 int main() {
-    Playlist myPlaylist;
-    User user;
-    PlaylistSettings playlistSettings;
-    TrackProgress trackProgress;
+    setlocale(LC_ALL, "Russian");
 
-    // Добавляем треки в плейлист
-    Playlist add_tracks_to_playlist(myPlaylist);
+    // Демонстрация динамического массива объектов класса
+    int numUsers;
+    cout << "Введите количество пользователей: ";
+    cin >> numUsers;
 
-    // Заполняем данные пользователя
+    // Создаем динамический массив объектов класса User
+    User* usersArray = new User[numUsers];
+    for (int i = 0; i < numUsers; ++i) {
+        cout << "\nПользователь " << i + 1 << ":\n";
+        usersArray[i].fill_user_data();
+    }
 
+    // Вывод информации о каждом пользователе
+    cout << "\nИнформация о пользователях:\n";
+    for (int i = 0; i < numUsers; ++i) {
+        usersArray[i].print_user_info();
+    }
 
-    // Настройки плейлиста
+    // Освобождаем память, выделенную для массива объектов
+    delete[] usersArray;
 
+    // Демонстрация массива указателей на динамические объекты класса
+    int numPlaylists;
+    cout << "\nВведите количество плейлистов: ";
+    cin >> numPlaylists;
 
-    // Прогресс трека
+    // Создаем массив указателей на объекты класса Playlist
+    Playlist** playlistsArray = new Playlist * [numPlaylists];
+    for (int i = 0; i < numPlaylists; ++i) {
+        playlistsArray[i] = new Playlist();  // Создаем каждый плейлист динамически
+        string name;
+        cout << "\nВведите название плейлиста " << i + 1 << ": ";
+        cin >> name;
+        playlistsArray[i]->name(name);
 
+        int trackCount;
+        cout << "Введите количество треков для добавления в плейлист " << i + 1 << ": ";
+        cin >> trackCount;
+        playlistsArray[i]->add_tracks_to_playlist(trackCount);
+        cout << "\nВведите настройки плейлиста " << i + 1 << ":\n";
+        playlistsArray[i]->input_settings();
+    }
 
-    // Выводим информацию о плейлисте и пользователе
+    // Вывод информации о каждом плейлисте, используя указатели и операторы -> и *.
+    cout << "\nИнформация о плейлистах:\n";
+    for (int i = 0; i < numPlaylists; ++i) {
+        cout << "\nПлейлист " << i + 1 << ":\n";
+        playlistsArray[i]->print_playlist_info();
 
+        cout << "\nНастройки плейлиста " << i + 1 << ":\n";
+        (*playlistsArray[i]).print_playlist_settings();
+    }
+
+    // Освобождаем память, выделенную для каждого плейлиста, и затем для массива указателей
+    for (int i = 0; i < numPlaylists; ++i) {
+        delete playlistsArray[i];  // Удаляем каждый динамический объект Playlist
+    }
+    delete[] playlistsArray;  // Удаляем массив указателей на объекты Playlist
 
 }
