@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstring>
 #include <locale.h>
+#include <vector> 
 #include <Windows.h>
 using namespace std;
 
@@ -167,12 +168,40 @@ public:
 class User {
 private:
     string username;               // Имя пользователя
-    AudioSettings audioSettings;  // Настройки аудио
-    Device device;               // Устройство пользователя
-    Equalizer equalizer;         // Настройки эквалайзера
-    string preferredCodec;            // Предпочтительный аудиоформат
+    AudioSettings audioSettings;   // Настройки аудио
+    Device device;                 // Устройство пользователя
+    Equalizer equalizer;           // Настройки эквалайзера
+    string preferredCodec;         // Предпочтительный аудиоформат
+    vector<Playlist*> playlists;    // Вектор для хранения указателей на плейлисты
+
 public:
-    //Функция для заполнения информации о пользователе
+    // Destructor to free memory
+    ~User() {
+        for (auto playlist : playlists) {
+            delete playlist; // Free each dynamically allocated Playlist
+        }
+    }
+
+    // Функция для добавления плейлистов
+    void add_playlist_user() {
+        Playlist* newPlaylist = new Playlist(); // Создаем новый плейлист
+        string name;
+
+        cout << "Введите название плейлиста: ";
+        cin >> name;
+        newPlaylist->name(name);
+
+        int trackCount;
+        cout << "Введите количество треков для добавления в плейлист: ";
+        cin >> trackCount;
+        newPlaylist->add_tracks_to_playlist(trackCount);
+        cout << "Введите настройки плейлиста:\n";
+        newPlaylist->input_settings();
+
+        playlists.push_back(newPlaylist); // Добавляем плейлист в вектор
+    }
+
+    // Функция для заполнения информации о пользователе
     void fill_user_data() {
         cout << "Введите имя пользователя: ";
         cin >> username;
@@ -207,7 +236,6 @@ public:
         cin >> preferredCodec;
     }
 
-
     // Функция для вывода информации о пользователе
     void print_user_info() const {
         cout << "\nИнформация о пользователе:\n";
@@ -216,6 +244,14 @@ public:
         device.print();
         equalizer.print();
         cout << "Preferred Codec: " << preferredCodec << "\n";
+
+        // Вывод информации о плейлистах
+        cout << "\nПлейлисты:\n";
+        for (size_t i = 0; i < playlists.size(); i++) {
+            cout << "Плейлист " << i + 1 << ":\n";
+            playlists[i]->print_playlist_info();
+            playlists[i]->print_playlist_settings();
+        }
     }
 };
 
@@ -233,6 +269,13 @@ int main() {
     for (int i = 0; i < numUsers; ++i) {
         cout << "\nПользователь " << i + 1 << ":\n";
         usersArray[i].fill_user_data();
+
+        char addMore;
+        do {
+            usersArray[i].add_playlist_user(); // Allow users to add playlists
+            cout << "Хотите добавить еще один плейлист? (y/n): ";
+            cin >> addMore;
+        } while (addMore == 'y' || addMore == 'Y');
     }
 
     // Вывод информации о каждом пользователе
@@ -244,42 +287,5 @@ int main() {
     // Освобождаем память, выделенную для массива объектов
     delete[] usersArray;
 
-    // Демонстрация массива указателей на динамические объекты класса
-    int numPlaylists;
-    cout << "\nВведите количество плейлистов: ";
-    cin >> numPlaylists;
-
-    // Создаем массив указателей на объекты класса Playlist
-    Playlist** playlistsArray = new Playlist * [numPlaylists];
-    for (int i = 0; i < numPlaylists; ++i) {
-        playlistsArray[i] = new Playlist();  // Создаем каждый плейлист динамически
-        string name;
-        cout << "\nВведите название плейлиста " << i + 1 << ": ";
-        cin >> name;
-        playlistsArray[i]->name(name);
-
-        int trackCount;
-        cout << "Введите количество треков для добавления в плейлист " << i + 1 << ": ";
-        cin >> trackCount;
-        playlistsArray[i]->add_tracks_to_playlist(trackCount);
-        cout << "\nВведите настройки плейлиста " << i + 1 << ":\n";
-        playlistsArray[i]->input_settings();
-    }
-
-    // Вывод информации о каждом плейлисте, используя указатели и операторы -> и *.
-    cout << "\nИнформация о плейлистах:\n";
-    for (int i = 0; i < numPlaylists; ++i) {
-        cout << "\nПлейлист " << i + 1 << ":\n";
-        playlistsArray[i]->print_playlist_info();
-
-        cout << "\nНастройки плейлиста " << i + 1 << ":\n";
-        (*playlistsArray[i]).print_playlist_settings();
-    }
-
-    // Освобождаем память, выделенную для каждого плейлиста, и затем для массива указателей
-    for (int i = 0; i < numPlaylists; ++i) {
-        delete playlistsArray[i];  // Удаляем каждый динамический объект Playlist
-    }
-    delete[] playlistsArray;  // Удаляем массив указателей на объекты Playlist
 
 }
