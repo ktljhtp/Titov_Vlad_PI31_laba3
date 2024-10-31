@@ -175,12 +175,6 @@ private:
     vector<Playlist*> playlists;    // Вектор для хранения указателей на плейлисты
 
 public:
-    // Destructor to free memory
-    ~User() {
-        for (auto playlist : playlists) {
-            delete playlist; // Free each dynamically allocated Playlist
-        }
-    }
 
     // Функция для добавления плейлистов
     void add_playlist_user() {
